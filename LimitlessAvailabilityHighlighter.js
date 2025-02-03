@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LimitlessAvailabilityHighlighter
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.1
 // @description  Highlights table rows based on configured availability times
 // @author       MatuxGG
 // @match        https://play.limitlesstcg.com/tournaments/upcoming
@@ -75,6 +75,16 @@
                 if (!date) {
                     //console.log(`Row #${rowIndex + 1} has no data-date attribute. Skipping.`);
                     return;
+                }
+
+                const userLocale = navigator.language;
+                const dateObj = new Date(date);
+                const day = dateObj.toLocaleDateString(userLocale, { weekday: "long" });
+                const capitalizedDay = day.charAt(0).toUpperCase() + day.slice(1);
+
+                const dateCell = row.querySelector("td.date");
+                if (dateCell) {
+                    dateCell.textContent = `${capitalizedDay} ${dateCell.textContent}`;
                 }
 
                 const isInTimeRange = isInInterval(date, availability);
